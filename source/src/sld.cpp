@@ -31,6 +31,7 @@ int slice = 0;
 int tv_quit = 0;
 int more_keys = 1;
 
+
 volatile solver_t* solver = NULL;
 std::string known_keystring;
 

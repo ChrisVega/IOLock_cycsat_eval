@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.7.5.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +31,10 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
+
 #ifndef YY_YY_BENCH_TAB_HH_INCLUDED
 # define YY_YY_BENCH_TAB_HH_INCLUDED
 /* Debug traces.  */
@@ -40,27 +45,31 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INPUT = 258,
-    OUTPUT = 259,
-    LPAREN = 260,
-    RPAREN = 261,
-    COMMA = 262,
-    EQUALS = 263,
-    ID = 264
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    INPUT = 258,                   /* INPUT  */
+    OUTPUT = 259,                  /* OUTPUT  */
+    LPAREN = 260,                  /* LPAREN  */
+    RPAREN = 261,                  /* RPAREN  */
+    COMMA = 262,                   /* COMMA  */
+    EQUALS = 263,                  /* EQUALS  */
+    ID = 264                       /* ID  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 23 "bench.y" /* yacc.c:1909  */
+#line 23 "bench.y"
 
     std::string             *id;
     ast_n::input_decl_t     *input_stm;
@@ -70,9 +79,9 @@ union YYSTYPE
     ast_n::statements_t     *statements;
     ast_n::gate_inputs_t    *gate_inputs;
 
-#line 74 "bench.tab.hh" /* yacc.c:1909  */
-};
+#line 83 "bench.tab.hh"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

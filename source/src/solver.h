@@ -134,6 +134,10 @@ private:
     std::vector<bool> input_values;
     std::vector<bool> output_values;
     std::vector<bool> fixed_keys;
+    std::vector<bool> lock_key;
+    std::vector<bool> out_lock_key;
+    std::vector<bool> unlock_key;
+    std::vector<bool> out_unlock_key;
     iovalue_vector_t iovectors;
 
     // methods.
@@ -189,6 +193,7 @@ public:
     bool solve(solver_version_t ver, rmap_t& keysFoundMap, bool quiet);
     void blockKey(rmap_t& keysFoundMap);
     bool getNewKey(rmap_t& keysFoundMap);
+    void shift_it(std::vector<bool>& key);
     void findFixedKeys(std::map<int, int>& backbones);
 
     static void solveSlice(

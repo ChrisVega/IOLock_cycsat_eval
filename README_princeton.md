@@ -62,7 +62,9 @@ input patterns.
 An example:
 
     $ cd bin
-    $ ./sld ../benchmarks/rnd/c880_enc50.bench ../benchmarks/original/c880.bench
+    $ ./sld ../../benchmarks/rnd/c880_enc50.bench ../../benchmarks/original/c880.bench
+    ./sld ../../benchmarks/cyclic_benchmarks/djin/c880_enc50_diff.cyc.bench ../../benchmarks/cyclic_benchmarks/original/c880_djin.bench 
+    ./sld ../../benchmarks/cyclic_benchmarks/djin/c880_enc50.cyc.bench ../../benchmarks/cyclic_benchmarks/original/c880_djin.bench 
 
 The output when this command is run is:
 
@@ -91,7 +93,25 @@ circuit. The third argument must be a string of the form 'key=<keyvalue>'.
 
 An example of its invocation:
 
-    $ ./lcmp ../benchmarks/original/c880.bench ../benchmarks/rnd/c880_enc50.bench key=000000110011111011100110110100001001000100000001000010111010001100111111100100001101000010111000010000010011110000111111011001010000001110110011101011111010010100010101110000010110000110000101
+    $ ./lcmp ../../benchmarks/original/c880.bench ../../benchmarks/rnd/c880_enc50.bench key=000000110011111011000110100101001001000100000011100101111010000100111111100101111101111110111000110000010011110100111111011001010000011110110011101011111010010100010101110000010110000110010101
+
+
+./lcmp ../../benchmarks/original/c880.bench ../../benchmarks/rnd/c880_enc50.bench key=
+./lcmp ../../benchmarks/original/apex2.bench ../../benchmarks/rnd/apex2_enc05.bench key=
+./lcmp ../../benchmarks/original/apex2.bench ../../benchmarks/rnd/apex2_enc50.bench key=
+
+./lcmp ../../benchmarks/cyclic_benchmarks/original/c880_djin.bench ../../benchmarks/cyclic_benchmarks/djin/c880_enc50.cyc.bench key=
+
+./lcmp ../../benchmarks/original/c880.bench ../../benchmarks/cyclic_benchmarks/djin/c880_enc50_diff.cyc.bench key=
+./lcmp ../../benchmarks/original/c880.bench ../../benchmarks/cyclic_benchmarks/djin/c880_enc25.bench key=000000110011011011110110110001111001000100110011100000011010001111111111100101101101100110111001
+
+./lcmp ../../benchmarks/original/c880.bench ../../benchmarks/cyclic_benchmarks/original/c880_djin.bench key=000000110011111011000110100101001001000100000011100101111010000100111111100101111101111110111000110000010011110100111111011001010000011110110011101011111010010100010101110000010110000110010101
+
+
+
+./sld ../../benchmarks/cyclic_benchmarks/djin/c880_enc50_diff.cyc.bench ../../benchmarks/cyclic_benchmarks/original/c880_djin.bench
+
+
 
 The output will be the string 'equivalent' if the correct key is provided. If
 not, the utility will output the string 'different'. The above command should

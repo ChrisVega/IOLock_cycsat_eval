@@ -1,5 +1,5 @@
 PROFILE:=0
-DEBUG?=0
+DEBUG?=1
 CC=gcc-5
 CXX:=g++-5
 LD=g++-5
@@ -47,16 +47,16 @@ LGLLIBFLAGS=-llgl
 
 INCLUDE=${MINISATINCLUDE} ${CPLEXINCLUDE} ${CUDDINCLUDE} ${CMSATINCLUDE} ${LGLINCLUDE}
 LIBS=-lfl -lz -lgomp ${LGLLIBFLAGS}
-DEFINES=-D __STDC_LIMIT_MACROS -D __STDC_FORMAT_MACROS -D IL_STD # -D HAVE_CONFIG_H
+DEFINES       = -DQT_QML_DEBUG -D __STDC_LIMIT_MACROS -D __STDC_FORMAT_MACROS -D IL_STD # -D HAVE_CONFIG_H
 
 # CPLEX defines.
-CPLEXINCLUDE:=-I/opt/ibm/ILOG/CPLEX_Studio_Community127/cplex/include/ -I/opt/ibm/ILOG/CPLEX_Studio_Community127/concert/include/
-CPLEXLIBRARIES:=-L/opt/ibm/ILOG/CPLEX_Studio_Community127/concert/lib/x86-64_linux/static_pic/ -L/opt/ibm/ILOG/CPLEX_Studio_Community127/cplex/lib/x86-64_linux/static_pic/
+CPLEXINCLUDE:=-I/home/chris/Desktop/ibm/cplex/include/ -I/home/chris/Desktop/ibm/concert/include/
+CPLEXLIBRARIES:=-L/home/chris/Desktop/ibm/concert/lib/x86-64_linux/static_pic/ -L/home/chris/Desktop/ibm/cplex/lib/x86-64_linux/static_pic/
 CPLEXLIBFLAGS:=-lilocplex -lcplex -lconcert -lm -lpthread
 
-CXXFLAGS:=-c -Wall -Werror -fopenmp -std=c++0x ${INCLUDE} ${DEFINES} ${DBGFLAGS} ${OPTFLAGS} ${PGFLAGS} -Wno-strict-overflow # -Wno-unused-result -Wno-unused-function
-LFLAGS:=-c -Wall ${INCLUDE} ${DEFINES} ${DBGFLAGS} ${OPTFLAGS} ${PGFLAGS} # -Wno-unused-result -Wno-unused-function
-LDFLAGS:=${DBGFLAGS} ${OPTFLAGS} ${PGFLAGS} $(CUDDLIBRARIES)  ${CPLEXLIBRARIES}  $(CMSATLIBRARIES) ${LGLLIBRARIES}
+CXXFLAGS:=-g -Wall -Wextra -Werror -fopenmp -std=c++0x ${INCLUDE} ${DEFINES} ${DBGFLAGS} ${OPTFLAGS} ${PGFLAGS} -Wno-strict-overflow  -Wno-unused-result -Wno-unused-function -Wno-unused-parameter -Wno-type-limits
+LFLAGS:=--g -Wall -Wextra ${INCLUDE} ${DEFINES} ${DBGFLAGS} ${OPTFLAGS} ${PGFLAGS}  -Wno-unused-result -Wno-unused-function -Wno-unused-parameter -Wno-type-limits
+LDFLAGS:=-g -Wall -Wextra ${OPTFLAGS} ${PGFLAGS} $(CUDDLIBRARIES)  ${CPLEXLIBRARIES}  $(CMSATLIBRARIES) ${LGLLIBRARIES} ${DEFINES} -Wno-unused-result -Wno-unused-function -Wno-reorder -Wno-unused-parameter -Wno-type-limits
 SUFFIXES += .d
 
 #Find all the C++ files in the current directory.
@@ -89,7 +89,7 @@ simplify: sld
 	ln -s sld simplify
 
 sld: lex.yy.o bench.tab.o ${MINISATLIB} ${CMSATLIB} ${LGLLIB} ${CUDDLIBS} $(OBJECTS) 
-	$(LD) $(LDFLAGS) -o sld $(OBJECTS) ${CMSATLIB} lex.yy.o bench.tab.o ${MINISATLIB} ${CPLEXLIBFLAGS} ${CUDDLIBFLAGS} ${LIBS}  
+	$(LD) $(LDFLAGS) -o sld $(OBJECTS) ${CMSATLIB} lex.yy.o bench.tab.o ${MINISATLIB} ${CPLEXLIBFLAGS} ${CUDDLIBFLAGS} ${LIBS} ${DEFINES}
 
 lex.yy.o: lex.yy.cc bench.tab.cc
 	$(CXX) $(LFLAGS) lex.yy.cc

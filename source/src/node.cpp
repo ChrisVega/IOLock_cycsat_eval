@@ -34,7 +34,7 @@ namespace ckt_n {
         node_t* n = new node_t();
         std::string func(func_in);
         std::transform(func.begin(), func.end(), func.begin(), ::tolower);
-        if(func == "buff" || func == "buf")  {
+        if(func == "buff" || func == "buf" || func == "butts")  {
             std::string f = "buf";
             n->_init_gate(name, f);
         } else {
@@ -92,11 +92,22 @@ namespace ckt_n {
     {
         type = GATE;
         name = o;
-        func = f;
         std::transform(func.begin(), func.end(), func.begin(), ::tolower);
         inputs.clear();
         fanouts.clear();
-        output = false;
+                if(f == "lfsr0") {
+            func = "buf";
+            output = false;
+            std::cout << name << " 0" << std::endl;
+        }
+        else if(f == "lfsr1") {
+            func = "buf";
+            output = false;
+            std::cout << name << " 1" << std::endl;
+        }else {
+            func = f;
+            output = false;
+        }
     }
 
     const clause_provider_i<sat_n::Solver>* node_t::get_solver_provider()
@@ -205,7 +216,8 @@ namespace ckt_n {
             { std::string("and"), std::string("nand") },
             { std::string("or"), std::string("nor") },
             { std::string("xor"), std::string("xnor") },
-            { std::string("not"), std::string("buf") }
+            { std::string("not"), std::string("buf") },
+            { std::string("not"), std::string("lfsr1") }
         };
         static const int MAP_SIZE = sizeof(map) / sizeof(map[0]);
         for(int i=0; i != MAP_SIZE; i++) {
@@ -273,7 +285,7 @@ namespace ckt_n {
                     }
                     fanouts.clear();
                 }
-            } else if(func == "not" || func == "buf") {
+            } else if(func == "not" || func == "buf"  || func == "lfsr1") {
                 // have to rewrite fanouts.
                 for(auto it = fanouts.begin(); it != fanouts.end(); it++) {
                     node_t* fout = *it;
@@ -354,7 +366,7 @@ namespace ckt_n {
         } else if(func == "not") {
             assert(p_in.size() == 1);
             return 1-p_in[0];
-        } else if(func == "buf") {
+        } else if(func == "buf" || func == "lfsr1") {
             assert(p_in.size() == 1);
             return p_in[0];
         } else if(func == "mux") {

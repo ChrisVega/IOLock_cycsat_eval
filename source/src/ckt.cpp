@@ -1207,6 +1207,7 @@ namespace ckt_n {
         }
         gates.push_back(g);
         nodes.push_back(g);
+        std::cout <<"fuck" << std::endl;
         return g;
     }
 
@@ -1342,7 +1343,8 @@ namespace ckt_n {
             { std::string("and"), std::string("nand") },
             { std::string("or"), std::string("nor") },
             { std::string("xor"), std::string("xnor") },
-            { std::string("not"), std::string("buf") }
+            { std::string("not"), std::string("buf") },
+            { std::string("not"), std::string("lfsr1") }
         };
         static const int MAP_SIZE = sizeof(map) / sizeof(map[0]);
         for(int i=0; i != MAP_SIZE; i++) {
@@ -1360,7 +1362,8 @@ namespace ckt_n {
             { std::string("and"), std::string("nand") },
             { std::string("or"), std::string("nor") },
             { std::string("xor"), std::string("xnor") },
-            { std::string("not"), std::string("buf") }
+            { std::string("not"), std::string("buf") },
+            { std::string("not"), std::string("lfsr1") }
         };
         static const int MAP_SIZE = sizeof(map) / sizeof(map[0]);
         if(n->is_gate()) {
@@ -1655,7 +1658,7 @@ namespace ckt_n {
             node_t* inp = NULL;
             // we look at the gate and set rewrite
             // and inp if the gate can be rewritten.
-            if(gates[i]->func == "buf") {
+            if(gates[i]->func == "buf" || gates[i]->func == "lfsr1") {
                 // case 1: gate is just a buffer.
                 assert(gates[i]->num_inputs() == 1);
                 rewrite = true;

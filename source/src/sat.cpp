@@ -36,7 +36,7 @@ namespace ckt_n {
         } else if(func == "not") {
             assert(num_inputs == 1);
             return &nand_provider;
-        } else if(func == "buf") {
+        } else if(func == "buf" || func == "lfsr1") {
             assert(num_inputs == 1);
             return &and_provider;
         } else if(func == "mux") {
@@ -82,7 +82,7 @@ namespace ckt_n {
         } else if(func == "not") {
             assert(num_inputs == 1);
             return &nand_provider3;
-        } else if(func == "buf") {
+        } else if(func == "buf" || func == "lfsr1") {
             assert(num_inputs == 1);
             return &and_provider3;
         } else if(func == "mux") {
@@ -128,7 +128,7 @@ namespace ckt_n {
         } else if(func == "not") {
             assert(num_inputs == 1);
             return &nand_provider4;
-        } else if(func == "buf") {
+        } else if(func == "buf" || func == "lfsr1") {
             assert(num_inputs == 1);
             return &and_provider4;
         } else if(func == "mux") {
@@ -174,7 +174,7 @@ namespace ckt_n {
         } else if(func == "not") {
             assert(num_inputs == 1);
             return &nand_provider5;
-        } else if(func == "buf") {
+        } else if(func == "buf" || func == "lfsr1") {
             assert(num_inputs == 1);
             return &and_provider5;
         } else if(func == "mux") {

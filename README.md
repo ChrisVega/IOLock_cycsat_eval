@@ -1,5 +1,6 @@
 ## CycSAT-I original version
 
+./sld ../../benchmarks/cyclic_benchmarks/djin/c880_enc50.cyc.bench ../../benchmarks/cyclic_benchmarks/original/c880_djin.bench
 
 ### CycSAT: SAT-based attack on cyclic logic encryptions
 ### [Northwestern University](http://users.eecs.northwestern.edu/~haizhou/)

@@ -6,6 +6,8 @@
 #include <iterator>
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
+#include <cmath>
+#include <cstdlib>
 
 #include <ilcplex/ilocplex.h>
 ILOSTLBEGIN
@@ -18,6 +20,10 @@ solver_t::solver_t(ckt_n::ckt_t& c, ckt_n::ckt_t& s, int verb)
     , input_values(ckt.num_ckt_inputs(), false)
     , output_values(ckt.num_outputs(), false)
     , fixed_keys(ckt.num_key_inputs(), false)
+    , lock_key(ckt.num_ckt_inputs(), false)
+    , out_lock_key(output_values.size(), false)
+    , unlock_key(ckt.num_ckt_inputs(), false)
+    , out_unlock_key(output_values.size(), false)
     , verbose(verb)
     , iter(0)
     , backbones_count(0)
@@ -25,6 +31,7 @@ solver_t::solver_t(ckt_n::ckt_t& c, ckt_n::ckt_t& s, int verb)
 {
     MAX_VERIF_ITER = 1;
     time_limit = 1e100;
+    srand(time(NULL));
 
     using namespace ckt_n;
     using namespace sat_n;
@@ -79,6 +86,175 @@ solver_t::solver_t(ckt_n::ckt_t& c, ckt_n::ckt_t& s, int verb)
     dbl.dbl->init_keyinput_map(lmap, dbl_keyinput_flags);
 }
 
+bool random_bool()
+{
+    if (rand() % 2 == 0)
+            return true;
+        else return false;
+}
+
+bool XOR(bool a, bool b)
+{
+    if(!a != !b) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void solver_t::shift_it(std::vector<bool>& key)
+{
+    bool tap0 = false;
+    bool tap1 = false;
+    bool tap3 = false;
+    bool tap4 = false;
+    bool djininput0 = false;
+    switch(key.size()){
+        case 2:
+            djininput0 = XOR(key[0], key[1]);
+        case 3:
+            djininput0 = XOR(key[0], key[2]);
+        case 4:
+            djininput0 = XOR(key[0], key[3]);
+        case 5:
+            djininput0 = XOR(key[1], key[4]);
+        case 6:
+            djininput0 = XOR(key[0], key[6]);
+        case 7:
+            djininput0 = XOR(key[0], key[6]);
+        case 8:
+            tap0 = XOR(key[1], key[2]);
+            tap1 = XOR(key[3], key[7]);
+            djininput0 = XOR(tap0,tap1);
+        case 9:
+            djininput0 = XOR(key[3], key[8]);
+        case 10:
+            djininput0 = XOR(key[2], key[9]);
+        case 11:
+            djininput0 = XOR(key[1], key[10]);
+        case 12:
+            tap0 = XOR(key[0], key[3]);
+            tap1 = XOR(key[5], key[11]);
+            djininput0 = XOR(tap0,tap1);
+        case 13:
+            tap0 = XOR(key[0], key[2]);
+            tap1 = XOR(key[3], key[12]);
+            djininput0 = XOR(tap0,tap1);
+        case 14:
+            tap0 = XOR(key[0], key[2]);
+            tap1 = XOR(key[4], key[13]);
+            djininput0 = XOR(tap0,tap1);
+        case 15:
+            djininput0 = XOR(key[0], key[14]);
+        case 16:
+            tap0 = XOR(key[1], key[2]);
+            tap1 = XOR(key[4], key[15]);
+            djininput0 = XOR(tap0,tap1);
+        case 17:
+            djininput0 = XOR(key[2], key[16]);
+        case 18:
+            djininput0 = XOR(key[6], key[17]);
+        case 19:
+            tap0 = XOR(key[0], key[1]);
+            tap1 = XOR(key[4], key[18]);
+            djininput0 = XOR(tap0,tap1);
+        case 20:
+            djininput0 = XOR(key[2], key[19]);
+        case 21:
+            djininput0 = XOR(key[1], key[20]);
+        case 22:
+            djininput0 = XOR(key[0], key[21]);
+        case 23:
+            djininput0 = XOR(key[4], key[22]);
+        case 24:
+            tap0 = XOR(key[0], key[2]);
+            tap1 = XOR(key[3], key[23]);
+            djininput0 = XOR(tap0,tap1);
+        case 25:
+            djininput0 = XOR(key[2], key[24]);
+        case 26:
+            tap0 = XOR(key[0], key[1]);
+            tap1 = XOR(key[5], key[25]);
+            djininput0 = XOR(tap0,tap1);
+        case 27:
+            tap0 = XOR(key[0], key[1]);
+            tap1 = XOR(key[4], key[26]);
+            djininput0 = XOR(tap0,tap1);
+        case 28:
+            djininput0 = XOR(key[2], key[27]);
+        case 29:
+            djininput0 = XOR(key[1], key[28]);
+        case 30:
+            tap0 = XOR(key[0], key[3]);
+            tap1 = XOR(key[5], key[29]);
+            djininput0 = XOR(tap0,tap1);
+        case 31:
+            djininput0 = XOR(key[2], key[30]);
+        case 32:
+            tap0 = XOR(key[1], key[5]);
+            tap1 = XOR(key[6], key[31]);
+            djininput0 = XOR(tap0,tap1);
+        case 33:
+            djininput0 = XOR(key[32], key[19]);
+        case 34:
+            tap0 = XOR(key[26], key[33]);
+            tap1 = XOR(key[0], key[1]);
+            djininput0 = XOR(tap0,tap1);
+        case 35:
+            djininput0 = XOR(key[34], key[32]);
+        case 36:
+            djininput0 = XOR(key[35], key[24]);
+        case 37:
+            tap0 = XOR(key[36], key[4]);
+            tap1 = XOR(key[2], key[3]);
+            tap3 = XOR(key[1], key[0]);
+            tap4 = XOR(tap0,tap1);
+            djininput0 = XOR(tap4,tap3);
+        case 38:
+            tap0 = XOR(key[37], key[35]);
+            tap1 = XOR(key[4], key[0]);
+            djininput0 = XOR(tap0,tap1);
+        case 39:
+            djininput0 = XOR(key[38], key[34]);
+        case 40:
+            tap0 = XOR(key[39], key[37]);
+            tap1 = XOR(key[18], key[20]);
+            djininput0 = XOR(tap0,tap1);
+        case 41:
+            djininput0 = XOR(key[40], key[37]);
+        case 42:
+            tap0 = XOR(key[41], key[40]);
+            tap1 = XOR(key[18], key[19]);
+            djininput0 = XOR(tap0,tap1);
+        case 43:
+            tap0 = XOR(key[42], key[41]);
+            tap1 = XOR(key[36], key[37]);
+            djininput0 = XOR(tap0,tap1);
+        case 44:
+            tap0 = XOR(key[43], key[42]);
+            tap1 = XOR(key[16], key[17]);
+            djininput0 = XOR(tap0,tap1);
+        case 45:
+            tap0 = XOR(key[43], key[44]);
+            tap1 = XOR(key[40], key[41]);
+            djininput0 = XOR(tap0,tap1);
+        case 46:
+            tap0 = XOR(key[45], key[44]);
+            tap1 = XOR(key[24], key[25]);
+            djininput0 = XOR(tap0,tap1);
+        case 47:
+            djininput0 = XOR(key[46], key[41]);
+        case 48:
+            tap0 = XOR(key[47], key[46]);
+            tap1 = XOR(key[19], key[20]);
+            djininput0 = XOR(tap0,tap1);
+    }
+
+    for(unsigned i=key.size()-1; i > 0; i--) {
+        key[i] = key[i-1];
+    }
+    key[0] = djininput0;
+}
 
 void solver_t::addKnownKeys(std::vector<std::pair<int, int> >& values)
 {
@@ -96,6 +272,8 @@ void solver_t::addKnownKeys(std::vector<std::pair<int, int> >& values)
         }
     }
 }
+
+
 
 solver_t::~solver_t()
 {
@@ -156,6 +334,9 @@ void solver_t::_record_input_values()
 {
     std::vector<sat_n::lbool> values(S.nVars(), sat_n::l_Undef);
     sim.eval(input_values, output_values);
+    for(unsigned i=0; i != output_values.size(); i++) {
+        output_values[i] = XOR(output_values[i], out_lock_key[i]);
+    }
     _record_sim(input_values, output_values, values);
     int cnt = cl.addRewrittenClauses(values, dbl_keyinput_flags, S);
     __sync_fetch_and_add(&cube_count, cnt);
@@ -408,7 +589,6 @@ bool solver_t::_solve_v0(rmap_t& keysFound, bool quiet, int dlimFactor)
     using namespace AllSAT;
     using namespace std;
 
-	
 	nodelist_t cycle_list, topo_order;
 
     node_t* g = dbl.dbl->outputs[0];
@@ -465,6 +645,16 @@ bool solver_t::_solve_v0(rmap_t& keysFound, bool quiet, int dlimFactor)
 	std::cerr << filename0 << std::endl;
 	S.writeCNF(filename0);*/
    // add all zeros.
+    for(unsigned i=0; i != dbl.dbl->num_ckt_inputs(); i++) {
+        lock_key[i]=random_bool();
+        unlock_key[i]=random_bool();
+    }
+
+    for(unsigned i=0; i != output_values.size(); i++) {
+        out_lock_key[i]=random_bool();
+        out_unlock_key[i]=random_bool();
+    }
+
     for(unsigned i=0; i != dbl.dbl->num_ckt_inputs(); i++) { 
         input_values[i]=false; 
     }
@@ -474,6 +664,9 @@ bool solver_t::_solve_v0(rmap_t& keysFound, bool quiet, int dlimFactor)
     for(unsigned i=0; i != dbl.dbl->num_ckt_inputs(); i++) { 
         input_values[i]=true; 
     }
+
+    std::cout << "inputTEST: " << lock_key
+        << "; output: " << out_lock_key << std::endl;
     _record_input_values();
 
     bool done = false;
@@ -508,20 +701,24 @@ bool solver_t::_solve_v0(rmap_t& keysFound, bool quiet, int dlimFactor)
         }
 
         // now extract the inputs.
+        shift_it(lock_key);
+        shift_it(unlock_key);
+        shift_it(out_lock_key);
+        shift_it(out_unlock_key);
         for(unsigned i=0; i != dbl.dbl->num_ckt_inputs(); i++) {
             int jdx  = dbl.dbl->ckt_inputs[i]->get_index();
             lbool val = S.modelValue(lmap[jdx]);
             assert(val.isDef());
             if(!val.getBool()) {
-                input_values[i] = false;
+                input_values[i] = XOR(false, lock_key[i]);
             } else {
-                input_values[i] = true;
+                input_values[i] = XOR(true, lock_key[i]);
             }
         }
         _record_input_values();
         if(true) {
-            std::cout << "input: " << input_values 
-                << "; output: " << output_values << std::endl;
+            std::cout << "inputTEST: " << lock_key
+                << "; output: " << unlock_key << std::endl;
         }
 
         // _sanity_check_model();
@@ -628,16 +825,23 @@ bool solver_t::_verify_solution_sim(rmap_t& keysFound)
         std::vector<bool> input_values;
         std::vector<bool> output_values;
 
+        shift_it(lock_key);
+        shift_it(unlock_key);
+        shift_it(out_lock_key);
+        shift_it(out_unlock_key);
         for(unsigned i=0; i != cktinput_literals.size(); i++) {
             bool vi = bool(rand() % 2);
             assumps.push( vi ? cktinput_literals[i] : ~cktinput_literals[i]);
-            input_values.push_back(vi);
+            input_values.push_back(XOR(vi, unlock_key[i]));
         }
+        std::cout << "ALERT ALERT THIS IS A DEBUG MESSAGE!";
         sim.eval(input_values, output_values);
-        if(verbose) {
-            std::cout << "input: " << input_values 
+        for(unsigned i=0; i != output_values.size(); i++) {
+            output_values[i] = XOR(output_values[i], out_unlock_key[i]);
+        }
+        if(true) {
+            std::cout << "input: " << input_values
                       << "; output: " << output_values << std::endl;
-            dump_clause(std::cout << "assumps: ", assumps) << std::endl;
         }
 
         if(S.solve(assumps) == false) {
