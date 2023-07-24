@@ -1,4 +1,4 @@
-## CycSAT-I original version
+## CycSAT Modifications for IOLock Evaluations
 [Original CycSAT can be accessed here.](https://github.com/you-li-nu/cycsat_orig)
 
 This is a modification of CycSAT that incorporates the nessesary changes in order to evaluate the IOLock System. 
